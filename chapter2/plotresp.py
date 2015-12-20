@@ -1,10 +1,10 @@
 from matplotlib import use
-use('agg')
+use('pdf')
 import matplotlib.pyplot as plt
 from scipy.io.idl import readsav
 import numpy as np
 
-tresp = readsav('/imaps/holly/home/ajl7/CoronaTemps/aia_tresp')
+tresp = readsav('/home/sm1ajl/CoronaTemps/aia_tresp')
 
 tresp.resp94[:np.where(tresp.logt == 6.3)[0]] *= 6.7
 
