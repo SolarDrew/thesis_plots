@@ -1,5 +1,5 @@
 from matplotlib import use, rc
-use('agg')
+use('pdf')
 rc('savefig', bbox='tight', pad_inches=0.5)
 import matplotlib.pyplot as plt
 import sunpy.map
