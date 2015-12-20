@@ -1,5 +1,5 @@
 from matplotlib import use, rc_params
-use('agg')
+use('pdf')
 import chianti
 import chianti.core as ch
 from chianti import filters
