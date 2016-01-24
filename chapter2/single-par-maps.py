@@ -13,6 +13,7 @@ import numpy as np
 home = expanduser('~')
 CThome = join(home, 'CoronaTemps')
 datahome = join('/fastdata', 'sm1ajl', 'thesis')
+plotdir = join(datahome, 'plots', 'chapter2')
 
 """
 Plot temperature and EM values using single-parameter methods.
@@ -23,7 +24,7 @@ date = '2011-02-15'
 tmap = tm(date, n_params=1, verbose=True,
           data_dir=join(datahome, 'data'),
           maps_dir=join(datahome, 'maps'))
-#tmap.save()
+tmap.save()
 
 # Individual wavelengths
 alldata = np.zeros(shape=(6, 4096, 4096))
@@ -44,7 +45,7 @@ for wl in channels:
     plt.title('Single-parameter log(EM) solution')
     plt.colorbar()
 
-    plt.savefig('em_1par-{}_fd_2011-02-15'.format(wl))
+    plt.savefig(join(plotdir, 'em_1par-{}_fd_2011-02-15'.format(wl)))
     plt.close()
 
 # Average over 171, 193 and 211
@@ -55,7 +56,7 @@ emmap.plot(vmin=20.0, vmax=34.0)
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-three_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-three_fd_2011-02-15'.format(wl)))
 plt.close()
 
 # Standard deviation of 171, 193 and 211
@@ -68,7 +69,7 @@ emmap.plot(vmin=np.nanmean(d, dtype='float64')-(2*np.nanstd(d, dtype='float64'))
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-three-std_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-three-std_fd_2011-02-15'.format(wl)))
 plt.close()
 
 # Average over all wavelengths
@@ -79,7 +80,7 @@ emmap.plot(vmin=20.0, vmax=34.0)
 plt.title('Standard deviation of EM solutions')
 plt.colorbar()
 
-plt.savefig('em_1par-all_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-all_fd_2011-02-15'.format(wl)))
 plt.close()
 
 # Average over all wavelengths
@@ -92,5 +93,5 @@ emmap.plot(vmin=np.nanmean(d, dtype='float64')-(2*np.nanstd(d, dtype='float64'))
 plt.title('Standard deviation of EM solution')
 plt.colorbar()
 
-plt.savefig('em_1par-all-std_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-all-std_fd_2011-02-15'.format(wl)))
 plt.close()
