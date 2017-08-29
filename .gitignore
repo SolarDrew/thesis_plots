@@ -1,3 +1,5 @@
 *.sqe.o*
 *.sqe.e*
 *.txt
+*.pdf
+fits.so
