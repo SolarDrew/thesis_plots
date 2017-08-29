@@ -1,16 +1,22 @@
 from matplotlib import use, rc
 use('pdf')
 rc('savefig', bbox='tight', pad_inches=0.5)
+rc('font', size='25.0')
 import sys
 import os
 os.system('pwd')
-from os.path import expanduser
+from os.path import expanduser, join
 sys.path.append(expanduser('~/CoronaTemps/'))
 from temperature import TemperatureMap as tm
 import matplotlib.pyplot as plt
 from sunpy.map import Map
 from sunpy.time import parse_time as pt
 import numpy as np
+
+home = expanduser('~')
+CThome = join(home, 'CoronaTemps')
+datahome = join('/fastdata', 'sm1ajl', 'thesis')
+plotdir = join(datahome, 'plots', 'chapter4')
 
 """
 Plot temperature and EM values using single-parameter methods.
@@ -22,8 +28,8 @@ date = '2011-02-15'
 # Temperature
 # -----------
 tmap = tm(date, n_params=1, verbose=True,
-          data_dir=expanduser('~/CoronaTemps/data'),
-          maps_dir=expanduser('~/CoronaTemps/maps'))
+          data_dir=join(datahome, 'data/{}/'.format(date).replace('-', '/')),
+          maps_dir=join(datahome, 'maps/{}/'.format(date).replace('-', '/')))
 tmap.save()
 
 print tmap.min(), tmap.mean(), tmap.max()
@@ -33,18 +39,16 @@ tmap.plot(vmin=5.9, vmax=6.6)
 plt.title('Single-parameter log(T) solution')
 plt.colorbar()
 
-plt.savefig('t_1par_fd_2011-02-15')
+plt.savefig(join(plotdir, 't_1par_fd_2011-02-15'))
 plt.close()
 
-sys.exit()
-
-fig = plt.figure(figsize=(32, 24))
+"""fig = plt.figure(figsize=(32, 24))
 tmap.plot()
 plt.title('Single-parameter log(T) solution')
 plt.colorbar()
 
 plt.savefig('t_1par_fd_2011-02-15-struct')
-plt.close()
+plt.close()"""
 
 # ----------------
 # Emission Measure
@@ -66,11 +70,11 @@ for wl in ['94', '131', '171', '193', '211', '335']:
     stdem = np.nanstd(emmap.data, dtype='float64')
     emmap.plot(vmin=meanem-(2.0*stdem),
                vmax=meanem+(2.0*stdem))"""
-    emmap.plot(vmin=20.0, vmax=34.0)
+    emmap.plot(vmin=20.0, vmax=32.0)
     plt.title('Single-parameter log(EM) solution')
     plt.colorbar()
 
-    plt.savefig('em_1par-{}_fd_2011-02-15'.format(wl))
+    plt.savefig(join(plotdir, 'em_1par-{}_fd_2011-02-15'.format(wl)))
     plt.close()
 
     emmap = emmap.submap([2000, 3024], [1200, 2224], units='pixels')
@@ -80,7 +84,7 @@ for wl in ['94', '131', '171', '193', '211', '335']:
     plt.title('Single-parameter log(EM) solution')
     plt.colorbar()
 
-    plt.savefig('em_1par-{}_fd_2011-02-15_ar'.format(wl))
+    plt.savefig(join(plotdir, 'em_1par-{}_fd_2011-02-15_ar'.format(wl)))
     plt.close()
 
 
@@ -92,11 +96,11 @@ fig = plt.figure(figsize=(32, 24))
 stdem = np.nanstd(emmap.data, dtype='float64')
 emmap.plot(vmin=meanem-(2.0*stdem),
            vmax=meanem+(2.0*stdem))"""
-emmap.plot(vmin=20.0, vmax=34.0)
+emmap.plot(vmin=20.0, vmax=32.0)
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-three_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-three_fd_2011-02-15'.format(wl)))
 plt.close()
 
 emmap = emmap.submap([2000, 3024], [1200, 2224], units='pixels')
@@ -106,7 +110,7 @@ emmap.plot(vmin=26.5, vmax=29.0, cmap='afmhot')
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-three_fd_2011-02-15_ar'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-three_fd_2011-02-15_ar'.format(wl)))
 plt.close()
 
 # Average over all wavelengths
@@ -121,7 +125,7 @@ emmap.plot(vmin=20.0, vmax=34.0)
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-all_fd_2011-02-15'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-all_fd_2011-02-15'.format(wl)))
 plt.close()
 
 emmap = emmap.submap([2000, 3024], [1200, 2224], units='pixels')
@@ -131,7 +135,7 @@ emmap.plot(vmin=26.5, vmax=29.0, cmap='afmhot')
 plt.title('Single-parameter log(EM) solution')
 plt.colorbar()
 
-plt.savefig('em_1par-all_fd_2011-02-15_ar'.format(wl))
+plt.savefig(join(plotdir, 'em_1par-all_fd_2011-02-15_ar'.format(wl)))
 plt.close()
 
 # ---------------
@@ -155,5 +159,5 @@ gmap.plot(cmap='cubehelix', vmin=-2.4, vmax=-0.6)
 plt.title('Single-parameter solution goodness-of-fit')
 plt.colorbar()
 
-plt.savefig('g_1par_fd_2011-02-15')
+plt.savefig(join(plotdir, 'g_1par_fd_2011-02-15'))
 plt.close()

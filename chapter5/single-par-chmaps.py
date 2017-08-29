@@ -1,28 +1,38 @@
 from matplotlib import use, rc, cm, _cm
-use('agg')
+use('pdf')
 rc('savefig', bbox='tight', pad_inches=0.5)
+rc('font', size='25.0')
 import matplotlib.pyplot as plt
 from matplotlib import patches
 import numpy as np
 import sys
-sys.path.append('/imaps/holly/home/ajl7/CoronaTemps/')
+sys.path.append('/home/sm1ajl/CoronaTemps/')
 from temperature import TemperatureMap as tm
 from sunpy.map import Map
 from sunpy.time import parse_time as parse
 from skimage import measure
 from sunpy.net import hek
-from os.path import join, expanduser
+import os
+from os.path import join, expanduser, exists
 
 fs = 20
 CThome = join(expanduser('~'), 'CoronaTemps')
+datahome = join('/fastdata', 'sm1ajl', 'thesis', 'data')
+mapshome = datahome.replace('/data', '/maps')
+plotshome = join(datahome.replace('/data', '/plots'), 'chapter5', 'ch')
+if not exists(plotshome):
+    os.makedirs(plotshome)
+
 
 dates = ['2011-02-01', '2011-02-01', '2011-02-14']
 coords = [([-500, 500], [0, 1000]), ([-400, 300], [-1150, -450]), ([-400, 400], [-1200, -400])]
 chmaps = []
 
 for date, coord in zip(dates, coords):
+    d = parse(date)
     if coord[0][1] != 300:
-        fdmap = Map('/imaps/sspfs/archive/sdo/aia/fulldisk/data/{0:%Y/%m/%d}/171/*A_{0:%Y-%m-%d}?{0:%H_%M_%S}*.fits'.format(parse(date)))
+        fdmap = Map(join(datahome, '{0:%Y/%m/%d}/171/*_{0:%Y?%m?%d}?{0:%H?%M?%S}*fits').format(parse(date)))
+        if isinstance(fdmap, list): fdmap = fdmap[0]
         fig, ax = plt.subplots(figsize=(16, 12))
         fdmap.plot()
     corner = coord[0][0], coord[1][0]
@@ -30,10 +40,11 @@ for date, coord in zip(dates, coords):
     rect = patches.Rectangle(corner, x, y, color='white', fill=False)
     ax.add_artist(rect)
     if coord[0][0] != -500:
-        plt.savefig('fulldisk_ch_{:%Y-%m-%dT%H%M}'.format(parse(date)))
+        plt.savefig(join(plotshome, 'fulldisk_ch_{:%Y-%m-%dT%H%M}').format(parse(date)))
         plt.close()
-    thismap = tm(date, #verbose=True,
-                 data_dir=join(CThome, 'data'), maps_dir=CThome)
+    thismap = tm(date, verbose=True,
+                 data_dir=join(datahome, '{:%Y/%m/%d}'.format(d)),
+                 maps_dir=join(mapshome, '{:%Y/%m/%d}'.format(d)))
     thismap.save()
     chmaps.append(thismap.submap(*coord))
 
@@ -52,7 +63,7 @@ for chmap, thing, label, c in zip(chmaps, ['a', 'b', ''], ['$CH_1$', '$CH_2$', '
     #    fontsize=24)
     plt.colorbar()
     
-    plt.savefig('ch_{:%Y-%m-%dT%H%M}{}'.format(parse(chmap.date), thing))
+    plt.savefig(join(plotshome, 'ch_{:%Y-%m-%dT%H%M}{}').format(parse(chmap.date), thing))
     plt.close()
 
     vmin = 24.0
@@ -69,7 +80,7 @@ for chmap, thing, label, c in zip(chmaps, ['a', 'b', ''], ['$CH_1$', '$CH_2$', '
         emmap.plot(vmin=vmin, vmax=vmax)
         plt.title('Coronal hole $EM_{'+wlen+'}$')
         plt.colorbar()
-        plt.savefig('ch_{:%Y-%m-%dT%H%M}{}_em{}'.format(parse(chmap.date), thing, wlen))
+        plt.savefig(join(plotshome, 'ch_{:%Y-%m-%dT%H%M}{}_em{}').format(parse(chmap.date), thing, wlen))
         plt.close()
     cmap = emmap.cmap
 
@@ -80,7 +91,7 @@ for chmap, thing, label, c in zip(chmaps, ['a', 'b', ''], ['$CH_1$', '$CH_2$', '
                cmap=cmap)
     plt.title('Coronal hole $EM_{'+wlen+'}$')
     plt.colorbar()
-    plt.savefig('ch_{:%Y-%m-%dT%H%M}{}_emthree'.format(parse(chmap.date), thing, wlen))
+    plt.savefig(join(plotshome, 'ch_{:%Y-%m-%dT%H%M}{}_emthree').format(parse(chmap.date), thing, wlen))
     plt.close()
     print 'EM_three', label, np.nanmean(emmap.data)
 
@@ -91,7 +102,7 @@ for chmap, thing, label, c in zip(chmaps, ['a', 'b', ''], ['$CH_1$', '$CH_2$', '
                cmap=cmap)
     plt.title('Coronal hole $EM_{'+wlen+'}$')
     plt.colorbar()
-    plt.savefig('ch_{:%Y-%m-%dT%H%M}{}_emall'.format(parse(chmap.date), thing, wlen))
+    plt.savefig(join(plotshome, 'ch_{:%Y-%m-%dT%H%M}{}_emall').format(parse(chmap.date), thing, wlen))
     plt.close()
 
     plt.sca(hax)
@@ -102,5 +113,5 @@ for chmap, thing, label, c in zip(chmaps, ['a', 'b', ''], ['$CH_1$', '$CH_2$', '
     plt.ylabel('% of image')
 
 plt.legend()
-plt.savefig('ch-histograms')
+plt.savefig(join(plotshome, 'ch-histograms'))
 plt.close()

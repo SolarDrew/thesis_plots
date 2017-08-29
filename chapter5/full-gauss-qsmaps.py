@@ -1,10 +1,11 @@
 from matplotlib import use, rc, cm, _cm
-use('agg')
+use('pdf')
 rc('savefig', bbox='tight', pad_inches=0.5)
+rc('font', size='25.0')
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
-sys.path.append('/imaps/holly/home/ajl7/CoronaTemps/')
+sys.path.append('/home/sm1ajl/CoronaTemps/')
 from temperature import TemperatureMap as tm
 from sunpy.map import Map
 from sunpy.time import parse_time as parse
@@ -14,6 +15,9 @@ from os.path import join, expanduser
 
 fs = 20
 CThome = join(expanduser('~'), 'CoronaTemps')
+datahome = join('/fastdata', 'sm1ajl', 'thesis', 'data')
+mapshome = datahome.replace('/data', '/maps')
+plotshome = join(datahome.replace('/data', '/plots'), 'chapter5', 'qs')
 
 qsmaps = []
 dates = ['2011-01-28', '2011-02-08', '2011-02-21'] # QS
@@ -26,8 +30,10 @@ coords = [([200, 700], [-700, -200]), ([-400, 100], [-400, 100]), ([-500, 0], [-
 
 hfig, hax = plt.subplots(figsize=(16, 12))
 for date, coord, label, c in zip(dates, coords, ['$QS_1$', '$QS_2$', '$QS_3$'], ['green', 'red', 'blue']):
-    qsmap = tm(date, n_params=3,# verbose=True,
-               data_dir=join(CThome, 'data'), maps_dir=CThome)
+    d = parse(date)
+    qsmap = tm(date, n_params=3, verbose=True,
+               data_dir=join(datahome, '{:%Y/%m/%d}'.format(d)),
+               maps_dir=join(mapshome, '{:%Y/%m/%d}'.format(d)))
     emmap = Map(qsmap.emission_measure, qsmap.meta).submap(*coord)
     wmap = Map(qsmap.dem_width, qsmap.meta).submap(*coord)
     qsmap.save()
@@ -43,7 +49,7 @@ for date, coord, label, c in zip(dates, coords, ['$QS_1$', '$QS_2$', '$QS_3$'], 
     #    fontsize=24)
     plt.colorbar()
     
-    plt.savefig('qs_{:%Y-%m-%dT%H%M}_full'.format(parse(qsmap.date)))
+    plt.savefig(join(plotshome, 'qs_{:%Y-%m-%dT%H%M}_full').format(parse(qsmap.date)))
     plt.close()
 
     cmap = _cm.cubehelix(s=2.8, r=-0.7, h=1.4, gamma=1.0)
@@ -54,7 +60,7 @@ for date, coord, label, c in zip(dates, coords, ['$QS_1$', '$QS_2$', '$QS_3$'], 
                vmax=np.nanmean(emmap.data)+(2*np.nanstd(emmap.data)))
     plt.title('Quiet sun $EM_{full}$')
     plt.colorbar()
-    plt.savefig('qsem_{:%Y-%m-%dT%H%M}_full'.format(parse(qsmap.date)))
+    plt.savefig(join(plotshome, 'qsem_{:%Y-%m-%dT%H%M}_full').format(parse(qsmap.date)))
     plt.close()
     print 'EM_full', label, np.nanmean(emmap.data)
 
@@ -65,7 +71,7 @@ for date, coord, label, c in zip(dates, coords, ['$QS_1$', '$QS_2$', '$QS_3$'], 
     wmap.plot(vmin=0.1, vmax=0.7)
     plt.title('Quiet sun DEM width')
     plt.colorbar()
-    plt.savefig('qsw_{:%Y-%m-%dT%H%M}_full'.format(parse(qsmap.date)))
+    plt.savefig(join(plotshome, 'qsw_{:%Y-%m-%dT%H%M}_full').format(parse(qsmap.date)))
     plt.close()
     print 'w', label, np.nanmean(wmap.data)
 
@@ -77,5 +83,5 @@ for date, coord, label, c in zip(dates, coords, ['$QS_1$', '$QS_2$', '$QS_3$'], 
     plt.ylabel('% of image')
 
 plt.legend()
-plt.savefig('qs-histograms-full')
+plt.savefig(join(plotshome, 'qs-histograms-full'))
 plt.close()
