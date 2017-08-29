@@ -1,0 +1,28 @@
+#! /bin/bash
+#$ -cwd
+
+module load apps/python/conda
+module load mpi/gcc/openmpi/1.8.8
+source activate thesis
+cd /home/sm1ajl/thesis_plots/chapter4/
+
+#rm parpy*
+
+#python plotres_v_models.py 1 94 > resvmodplot-1-94.txt
+#python plotres_v_models.py 3 void > resvmodplot-3.txt
+
+##python single-par-maps.py 1>> parpyout 2>> parpyerr
+##python full-gauss-maps.py 1>> parpyout 2>> parpyerr
+python test_vs_model_DEMs.py 1 94 > testvmod-1-94.txt
+python test_vs_model_DEMs.py 1 131 > testvmod-1-131.txt
+python test_vs_model_DEMs.py 1 171 > testvmod-1-171.txt
+python test_vs_model_DEMs.py 1 193 > testvmod-1-193.txt
+python test_vs_model_DEMs.py 1 211 > testvmod-1-211.txt
+python test_vs_model_DEMs.py 1 335 > testvmod-1-335.txt
+python test_vs_model_DEMs.py 1 three > testvmod-1-t.txt
+python test_vs_model_DEMs.py 1 all > testvmod-1-a.txt
+#python test_vs_model_DEMs.py 3 void > testvmod-3.txt
+
+#python recreate_images.py 1>> parpyout 2>> parpyerr
+
+#rm runall.sqe.*

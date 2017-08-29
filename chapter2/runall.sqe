@@ -1,0 +1,18 @@
+#$ -S /bin/sh
+#$ -cwd
+#$ -q mhd.q
+#$ -l mem=8G
+#$ -l rmem=8G
+
+module load gcc/4.8.1
+module load openmpi
+source activate thesis
+
+rm parpy*
+
+python single-par-maps.py 1>> parpyout 2>> parpyerr
+python full-gauss-maps.py 1>> parpyout 2>> parpyerr
+cd aiapreps_comparison/
+python compare_ssw_sunpy.py 1>> parpyout 2>> parpyerr
+
+rm runall.sqe.*

@@ -1,0 +1,32 @@
+#$ -S /bin/sh
+#$ -cwd
+#$ -q large.q
+#$ -pe openmpi-ib 16
+#$ -N ch5_all_tmaps
+#$ -l mem=8G
+#$ -l rmem=8G
+
+module load /apps/python/conda
+module load /mpi/gcc/openmpi/1.10.0
+source activate thesis
+cd /home/sm1ajl/thesis_plots/chapter5/
+
+rm parpy*
+
+echo 'Active regions!'
+#echo 'single'
+#python single-par-armaps.py 1>> parpyout 2>> parpyerr
+echo 'full'
+python full-gauss-armaps.py 1>> parpyout 2>> parpyerr
+#echo 'Quiet sun!'
+#echo 'single'
+#python single-par-qsmaps.py 1>> parpyout 2>> parpyerr
+#echo 'full'
+#python full-gauss-qsmaps.py 1>> parpyout 2>> parpyerr
+echo 'Coronal holes!'
+#echo 'single'
+#python single-par-chmaps.py 1>> parpyout 2>> parpyerr
+#echo 'full'
+#python full-gauss-chmaps.py 1>> parpyout 2>> parpyerr
+
+rm runall.sqe.*
