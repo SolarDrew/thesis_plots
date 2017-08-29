@@ -1,0 +1,3 @@
+[submodule "statistical_challenges_in_SIP"]
+	path = statistical_challenges_in_SIP
+	url = git@github.com:drewleonard42/statistical_challenges_in_SIP.git
